@@ -1,0 +1,102 @@
+import { auth, storage } from '@/firebase'
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc
+} from 'firebase/firestore'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+
+export const useFirebase = _collection => {
+  // AUTH
+
+  const doLogin = (email, password) =>
+    signInWithEmailAndPassword(auth, email, password)
+
+  const doLogout = () => signOut(auth)
+
+  // STORAGE
+
+  const fileUpload = async (file, path) => {
+    const storageRef = ref(storage, path)
+    const snapshot = uploadBytes(storageRef, file)
+    const url = getDownloadURL(snapshot.ref)
+
+    return url
+  }
+  // FIRESTORE
+
+  const create = (_collection, payload) =>
+    addDoc(collection(db, _collection), payload).then(doc => {
+      return doc.id
+    })
+
+  const update = (_collection, id, payload) =>
+    updateDoc(doc(db, _collection, id), payload).then(() => {
+      return id
+    })
+
+  const find = (_collection, id) =>
+    getDoc(doc(db, _collection, id)).then(doc => {
+      return doc.exists() ? doc.data() : null
+    })
+
+  const remove = (_collection, id) =>
+    deleteDoc(doc(db, _collection, id)).then(() => {
+      return id
+    })
+
+  const get = async ({
+    filters = [],
+    sorting = [],
+    limitCount = null,
+    startAfterDoc = null
+  }) => {
+    let queryRef = collection(db, this._collection)
+
+    if (filters.length > 0) {
+      filters.forEach(({ field, operator, value }) => {
+        queryRef = query(queryRef, where(field, operator, value))
+      })
+    }
+
+    if (sorting.length > 0) {
+      sorting.forEach(({ field, direction }) => {
+        queryRef = query(queryRef, orderBy(field, direction))
+      })
+    }
+
+    if (limitCount) {
+      queryRef = query(queryRef, limit(limitCount))
+    }
+
+    if (startAfterDoc) {
+      queryRef = query(queryRef, startAfter(startAfterDoc))
+    }
+
+    const querySnapshot = await getDocs(queryRef)
+
+    const docs = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }))
+    const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1]
+
+    return { docs, lastVisible }
+  }
+
+  return { doLogin, doLogout, fileUpload, create, update, find, remove, get }
+}
+
+/**
+ *  const { docs, lastVisible: lastDoc } = await get({
+      filters: [
+        { field: 'tipo', operator: '==', value: 'Disciplinas Obrigatórias ' }
+      ],
+      sorting: [{ field: 'disciplina' }],
+      limitCount: 5
+    })
+ */
