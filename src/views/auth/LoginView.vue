@@ -1,12 +1,11 @@
 <script setup>
-import AuthCard from '@/components/AuthCard.vue'
-import Button from '@/components/Button.vue'
 import Input from '@/components/Input.vue'
-import Link from '@/components/Link.vue'
-import { useFirebase } from '@/composables/useFirebase'
+import Button from '@/components/Button.vue'
+import Layout from '@/components/Layout.vue'
 
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useFirebase } from '@/composables/useFirebase'
 
 const { doLogin } = useFirebase()
 
@@ -21,7 +20,7 @@ const onSubmit = async () => {
   msg.value = null
   try {
     await doLogin(form.email, form.password)
-    router.redirect({ name: 'home' })
+    router.replace({ name: 'home' })
   } catch (error) {
     console.log(error)
     msg.value = 'Email ou senha invalida.'
@@ -32,7 +31,7 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <AuthCard>
+  <Layout auth>
     <div class="">
       <h1>Bem-vindo</h1>
       <p class="text-sm muted">
@@ -59,14 +58,14 @@ const onSubmit = async () => {
           v-model="form.password"
         />
 
-        <Button :loading="loading" class="w-full mt-6 justify-center">
+        <Button :loading="loading" variant="primary" class="w-full mt-6">
           Salvar
         </Button>
       </form>
 
       <p class="mt-6 text-sm">
-        Novo por aqui? <Link to="/">Crie sua conta.</Link>
+        Novo por aqui? <Button variant="link" to="/">Crie sua conta.</Button>
       </p>
     </div>
-  </AuthCard>
+  </Layout>
 </template>

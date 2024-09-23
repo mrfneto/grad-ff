@@ -1,26 +1,43 @@
 <script setup>
-import Logo from '@/components/Logo.vue'
-import { useFirebase } from '@/composables/useFirebase'
+import Layout from '@/components/Layout.vue'
 
-import { useStore } from '@/stores'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
-const { doLogout } = useFirebase()
+const label = 'Upload de Arquivo' // Pode ser passado via props
+const description = 'Selecione um arquivo para upload' // Pode ser passado via props
 
-const { user } = useStore()
-const router = useRouter()
+// Referência para o input de arquivo
+const fileInput = ref(null)
 
-const logout = async () => {
-  await doLogout()
-  router.replace({ name: 'login' })
+// Arquivo selecionado
+const selectedFile = ref(null)
+
+// Função para disparar o clique no input de arquivo
+const handleFileClick = () => {
+  fileInput.value.click()
+}
+
+// Função para capturar o arquivo selecionado
+const handleFileChange = event => {
+  const files = event.target.files
+  if (files.length > 0) {
+    selectedFile.value = files[0]
+  }
 }
 </script>
 
 <template>
-  <div class="container mx-auto">
-    <Logo class="size-12" />
-    <h1>Home Page</h1>
-    <p class="mt-4 text-gray-600">{{ user?.name }}</p>
-    <button class="btn btn-primary px-6" @click="logout">logout</button>
-  </div>
+  <Layout
+    title="Regularização"
+    description="Lista de pedidos de regularização em disciplinas"
+  >
+    <template #content>
+      <p>
+        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloremque
+        necessitatibus dolorem dolores in dolorum error, explicabo laborum nemo
+        ipsa saepe excepturi id iste provident? Doloremque ea ipsam expedita
+        harum dolorum.
+      </p>
+    </template>
+  </Layout>
 </template>

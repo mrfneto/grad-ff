@@ -1,4 +1,4 @@
-import { auth, storage } from '@/firebase'
+import { auth, db, storage } from '@/firebase'
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import {
   addDoc,
@@ -6,7 +6,13 @@ import {
   deleteDoc,
   doc,
   getDoc,
-  updateDoc
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  updateDoc,
+  where
 } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
@@ -55,7 +61,7 @@ export const useFirebase = _collection => {
     limitCount = null,
     startAfterDoc = null
   }) => {
-    let queryRef = collection(db, this._collection)
+    let queryRef = collection(db, _collection)
 
     if (filters.length > 0) {
       filters.forEach(({ field, operator, value }) => {
