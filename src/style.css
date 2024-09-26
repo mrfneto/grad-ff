@@ -49,21 +49,21 @@ hr {
 }
 
 table {
-  @apply w-full text-sm text-left text-gray-500 border-b border-gray-300;
+  @apply min-w-full divide-y divide-gray-200;
 }
 
 table thead {
-  @apply text-xs to-gray-700 uppercase border-b border-gray-400;
+  @apply bg-gray-100;
 }
 
 table th {
-  @apply px-4 py-3 font-semibold;
+  @apply py-3.5 px-4 text-sm font-medium text-left  text-gray-700;
 }
 
 table tbody {
-  @apply divide-y divide-gray-200;
+  @apply bg-white divide-y divide-gray-200;
 }
 
 table td {
-  @apply px-4 py-2 font-normal  whitespace-nowrap;
+  @apply px-4 py-2 text-sm whitespace-nowrap;
 }

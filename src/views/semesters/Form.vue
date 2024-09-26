@@ -3,8 +3,18 @@ import Layout from '@/components/Layout.vue'
 import Input from '@/components/Input.vue'
 import Button from '@/components/Button.vue'
 
-import { ref, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useFirebase } from '@/composables/useFirebase'
 
+const { save, find } = useFirebase('semesters')
+
+const route = useRoute()
+const router = useRouter()
+
+const id = computed(() => route.params.id || null)
+
+const loading = ref(false)
 const form = ref({
   name: '',
   date_start: '',
@@ -12,9 +22,24 @@ const form = ref({
   date_result: ''
 })
 
-const onSubmit = () => {
-  console.log(form.value)
+const onSubmit = async () => {
+  loading.value = true
+  try {
+    await save(form.value, id.value)
+    window.alert('Semestre salvo com sucesso.')
+    router.replace({ name: 'semesters' })
+  } catch (error) {
+    console.log('Ocorre um erro ao salvar o registro.', error)
+  } finally {
+    loading.value = false
+  }
 }
+
+onMounted(async () => {
+  if (id.value) {
+    form.value = await find(id.value)
+  }
+})
 </script>
 
 <template>
@@ -55,7 +80,12 @@ const onSubmit = () => {
           label="Previsão de avaliação"
         />
         <div class="flex items-center gap-4 pt-4">
-          <Button type="submit" variant="primary" class="w-full">
+          <Button
+            type="submit"
+            variant="primary"
+            class="w-full"
+            :loading="loading"
+          >
             Salvar
           </Button>
           <Button variant="outline" :to="{ name: 'semesters' }" class="w-full">

@@ -1,5 +1,6 @@
 import { auth, db, storage } from '@/firebase'
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import {
   addDoc,
   collection,
@@ -14,7 +15,6 @@ import {
   updateDoc,
   where
 } from 'firebase/firestore'
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
 export const useFirebase = _collection => {
   // AUTH
@@ -35,17 +35,16 @@ export const useFirebase = _collection => {
   }
   // FIRESTORE
 
-  const create = (_collection, payload) =>
-    addDoc(collection(db, _collection), payload).then(doc => {
-      return doc.id
-    })
+  const save = (payload, id = null) =>
+    id
+      ? updateDoc(doc(db, _collection, id), payload).then(() => {
+          return id
+        })
+      : addDoc(collection(db, _collection), payload).then(doc => {
+          return doc.id
+        })
 
-  const update = (_collection, id, payload) =>
-    updateDoc(doc(db, _collection, id), payload).then(() => {
-      return id
-    })
-
-  const find = (_collection, id) =>
+  const find = id =>
     getDoc(doc(db, _collection, id)).then(doc => {
       return doc.exists() ? doc.data() : null
     })
@@ -94,7 +93,7 @@ export const useFirebase = _collection => {
     return { docs, lastVisible }
   }
 
-  return { doLogin, doLogout, fileUpload, create, update, find, remove, get }
+  return { doLogin, doLogout, fileUpload, save, find, remove, get }
 }
 
 /**

@@ -48,14 +48,7 @@ const user = computed(() => {
           <!-- DROPDOWN BUTTON -->
           <template #trigger>
             <Button variant="outline" class="space-x-2">
-              <span class="hidden md:flex text-sm"
-                >Olá,
-                {{
-                  store.user?.displayName
-                    ? store.user?.displayName.split(' ')[0]
-                    : store.user?.store.user?.email.split('@')[0]
-                }}</span
-              >
+              <span class="hidden md:flex text-sm">Olá, {{ user.name }} </span>
               <Icon name="ChevronDown" class="size-4" />
             </Button>
           </template>

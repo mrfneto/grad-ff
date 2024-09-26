@@ -10,5 +10,11 @@ export default [
     name: 'semesters-add',
     component: () => import('@/views/semesters/Form.vue'),
     meta: { requiresAuth: true, title: 'Semestres' }
+  },
+  {
+    path: '/semesters/:id/edit',
+    name: 'semesters-edit',
+    component: () => import('@/views/semesters/Form.vue'),
+    meta: { requiresAuth: true, title: 'Semestres' }
   }
 ]
