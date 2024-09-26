@@ -12,7 +12,7 @@ const props = defineProps({
     default: 'base', // Variantes: primary | outline
     validator: value => ['primary', 'outline', 'link', 'base'].includes(value)
   },
-
+  to: [String, Object],
   shape: Boolean,
   loading: Boolean,
   icon: String
@@ -39,16 +39,22 @@ const buttonClasses = computed(() => {
 </script>
 
 <template>
-  <button :disabled="loading" :type="type" :class="buttonClasses">
+  <component
+    :is="to ? 'RouterLink' : 'button'"
+    :to="to"
+    :disabled="loading"
+    :type="type"
+    :class="buttonClasses"
+  >
     <Icon
       :name="icon"
       v-if="icon && !loading"
-      class="size-6"
+      class="size-4"
       :class="shape ? 'mr-0' : 'mr-2'"
     />
 
     <Icon name="LoaderCircle" v-if="loading" class="size-5 animate-spin" />
 
     <slot v-else />
-  </button>
+  </component>
 </template>

@@ -11,7 +11,8 @@ const props = defineProps({
   placeholder: String,
   disabled: Boolean,
   required: Boolean,
-  autocomplete: String
+  autocomplete: String,
+  pattern: String
 })
 
 const input = ref(null)
@@ -38,6 +39,7 @@ defineExpose({ focus: () => input.value.focus() })
       :disabled="disabled"
       :required="required"
       :autocomplete="autocomplete"
+      :pattern="pattern"
       v-model="model"
       class="block w-full border-gray-300 focus:border-gray-500 focus:ring focus:ring-gray-200 focus:ring-opacity-50 rounded-md shadow-sm"
     />

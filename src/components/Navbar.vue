@@ -36,7 +36,9 @@ const user = computed(() => {
     <nav class="container flex items-center justify-between h-16">
       <!-- NAVBAR START -->
       <div class="flex items-center justify-start space-x-4">
-        <Logo class="size-10" />
+        <RouterLink to="/">
+          <Logo class="size-10" />
+        </RouterLink>
       </div>
 
       <!-- NAVBAR END -->
@@ -60,7 +62,19 @@ const user = computed(() => {
 
           <!-- DROPDOWN CONTENT -->
           <template #content>
-            <DropdownLink to="#" class="dropdown-link" icon="Calendar">
+            <DropdownLink
+              :to="{ name: 'home' }"
+              class="dropdown-link"
+              icon="Home"
+            >
+              <span>Home</span>
+            </DropdownLink>
+            <hr />
+            <DropdownLink
+              :to="{ name: 'semesters' }"
+              class="dropdown-link"
+              icon="Calendar"
+            >
               <span>Semestres</span>
             </DropdownLink>
             <DropdownLink to="#" class="dropdown-link" icon="UsersRound">

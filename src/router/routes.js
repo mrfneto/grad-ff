@@ -1,3 +1,6 @@
+import auth from './auth'
+import semesters from './semesters'
+
 export default [
   {
     path: '/',
@@ -6,14 +9,11 @@ export default [
     meta: { requiresAuth: true, title: 'Home' }
   },
   {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/views/auth/LoginView.vue'),
-    meta: { requiresUnauth: true, title: 'Login' }
-  },
-  {
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/NotFoundView.vue'),
     meta: { title: '404' }
-  }
+  },
+
+  ...auth,
+  ...semesters
 ]
