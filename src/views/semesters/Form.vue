@@ -7,7 +7,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useFirebase } from '@/composables/useFirebase'
 
-const { save, find } = useFirebase('semesters')
+const { save, find, get } = useFirebase('semesters')
 
 const route = useRoute()
 const router = useRouter()
@@ -22,11 +22,25 @@ const form = ref({
   date_result: ''
 })
 
+const getSemesterExist = async value => {
+  const { docs } = await get({
+    filters: [{ field: 'name', operator: '==', value: value }]
+  })
+
+  return docs.length ? true : false
+}
+
 const onSubmit = async () => {
   loading.value = true
   try {
+    const semesterExist = await getSemesterExist(form.value.name)
+    if (semesterExist) {
+      alert('Já existe um semestre com o período informado')
+      return
+    }
+
     await save(form.value, id.value)
-    window.alert('Semestre salvo com sucesso.')
+    alert('Semestre salvo com sucesso.')
     router.replace({ name: 'semesters' })
   } catch (error) {
     console.log('Ocorre um erro ao salvar o registro.', error)
@@ -54,7 +68,7 @@ onMounted(async () => {
           id="name"
           v-model="form.name"
           required
-          label="Semester"
+          label="Semester (Ex: 2024-1)"
           placeholder="Ex: 2024-1"
           pattern="[0-9]{4}-[1-3]{1}"
         />

@@ -49,7 +49,7 @@ export const useFirebase = _collection => {
       return doc.exists() ? doc.data() : null
     })
 
-  const remove = (_collection, id) =>
+  const remove = id =>
     deleteDoc(doc(db, _collection, id)).then(() => {
       return id
     })

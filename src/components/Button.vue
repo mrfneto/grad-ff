@@ -15,6 +15,7 @@ const props = defineProps({
   to: [String, Object],
   shape: Boolean,
   loading: Boolean,
+  sm: Boolean,
   icon: String
 })
 
@@ -29,7 +30,9 @@ const buttonClasses = computed(() => {
   }[props.variant]
 
   const shapeClasses = props.shape
-    ? 'w-10 h-10 flex items-center justify-center'
+    ? props.sm
+      ? 'w-8 h-8 '
+      : 'w-10 h-10 '
     : props.variant === 'link'
     ? 'p-0'
     : 'px-4 h-10'

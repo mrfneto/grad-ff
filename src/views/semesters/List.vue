@@ -5,16 +5,28 @@ import Icon from '@/components/Icon.vue'
 import { onMounted, ref } from 'vue'
 import { useFirebase } from '@/composables/useFirebase'
 
-const { get } = useFirebase('semesters')
+const { get, remove } = useFirebase('semesters')
 
 const documents = ref([])
 
-onMounted(async () => {
+const removeDoc = async value => {
+  const confirmed = confirm('Tem certeza que deseja deletar este registro?')
+  if (confirmed) {
+    await remove(value)
+    load()
+  }
+}
+
+const load = async () => {
   const { docs } = await get({
-    sorting: [{ field: 'name' }],
+    sorting: [{ field: 'name', direction: 'desc' }],
     limitCount: 5
   })
   documents.value = docs
+}
+
+onMounted(async () => {
+  load()
 })
 </script>
 
@@ -45,12 +57,23 @@ onMounted(async () => {
                 <td class="font-medium">{{ doc.name }}</td>
                 <td>{{ doc.date_start }} à {{ doc.date_end }}</td>
                 <td>{{ doc.date_result }}</td>
-                <td class="text-left">
+                <td class="flex items-center justify-end space-x-2">
                   <Button
                     :to="{ name: 'semesters-edit', params: { id: doc.id } }"
                     class="hover:bg-gray-200"
+                    sm
+                    shape
                   >
                     <Icon name="Edit" class="size-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    @click="removeDoc(doc.id)"
+                    class="hover:bg-gray-200"
+                    sm
+                    shape
+                  >
+                    <Icon name="Trash" class="size-4" />
                   </Button>
                 </td>
               </tr>
