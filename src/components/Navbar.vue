@@ -70,10 +70,18 @@ const user = computed(() => {
             >
               <span>Semestres</span>
             </DropdownLink>
-            <DropdownLink to="#" class="dropdown-link" icon="UsersRound">
+            <DropdownLink
+              class="dropdown-link"
+              icon="UsersRound"
+              :to="{ name: 'teachers' }"
+            >
               Coordenadores
             </DropdownLink>
-            <DropdownLink to="#" class="dropdown-link" icon="ShieldAlert">
+            <DropdownLink
+              class="dropdown-link"
+              icon="ShieldAlert"
+              :to="{ name: 'irregularities' }"
+            >
               Irregularidades
             </DropdownLink>
             <hr />

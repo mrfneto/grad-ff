@@ -7,9 +7,8 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useFirebase } from '@/composables/useFirebase'
 import Checkbox from '@/components/Checkbox.vue'
-import Icon from '@/components/Icon.vue'
 
-const { save, find, get } = useFirebase('semesters')
+const { save, find, get } = useFirebase('teachers')
 
 const route = useRoute()
 const router = useRouter()
@@ -18,34 +17,18 @@ const id = computed(() => route.params.id || null)
 
 const loading = ref(false)
 const loadingForm = ref(false)
-
 const form = ref({
   name: '',
-  active: false,
-  date_result: ''
+  siape: '',
+  active: true
 })
-
-const getSemesterExist = async value => {
-  const { docs } = await get({
-    filters: [{ field: 'name', operator: '==', value: value }]
-  })
-
-  return docs.length ? true : false
-}
 
 const onSubmit = async () => {
   loading.value = true
   try {
-    // if (!id.value) {
-    //   const semesterExist = await getSemesterExist(form.value.name)
-    //   if (semesterExist) {
-    //     alert('Já existe um semestre com o período informado')
-
-    //   }
-    // }
     await save(form.value, id.value)
-    alert('Semestre salvo com sucesso.')
-    router.replace({ name: 'semesters' })
+    alert('Coordenador salvo com sucesso.')
+    router.replace({ name: 'teachers' })
   } catch (error) {
     console.log('Ocorre um erro ao salvar o registro.', error)
   } finally {
@@ -69,8 +52,8 @@ onMounted(async () => {
 
 <template>
   <Layout
-    :title="`${id ? 'Editar' : 'Cadastrar'}  Semestre`"
-    description="Gerencie as informações do semestre"
+    :title="`${id ? 'Editar' : 'Cadastrar'}  Coordenador`"
+    description="Gerencie as informações do coordenador"
   >
     <template #content>
       <div v-if="loadingForm" class="py-4 flex items-center justify-center">
@@ -82,24 +65,21 @@ onMounted(async () => {
           id="name"
           v-model="form.name"
           required
-          label="Semester (Ex: 2024-1)"
-          placeholder="Ex: 2024-1"
-          pattern="[0-9]{4}-[1-3]{1}"
+          label="Nome do coordenador"
+        />
+        <Input
+          type="text"
+          id="siape"
+          v-model="form.siape"
+          required
+          label="SIAPE"
         />
 
         <Checkbox
           id="active"
           v-model="form.active"
-          label="Publicar"
-          description="Marque esta opção para tornar o formulário visível para os alunos."
-        />
-
-        <Input
-          type="date"
-          id="date_result"
-          v-model="form.date_result"
-          required
-          label="Previsão para a análies do coordenador"
+          label="Exibir"
+          description="Desmarque esta opção no caso de ter deixado a coordenação."
         />
 
         <div class="flex items-center gap-4 pt-4">
@@ -111,7 +91,7 @@ onMounted(async () => {
           >
             Salvar
           </Button>
-          <Button variant="outline" :to="{ name: 'semesters' }" class="w-full">
+          <Button variant="outline" :to="{ name: 'teachers' }" class="w-full">
             Cancelar
           </Button>
         </div>

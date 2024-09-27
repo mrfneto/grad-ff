@@ -1,5 +1,13 @@
 <script setup>
 import Layout from '@/components/Layout.vue'
+import { useStore } from '@/stores'
+import { onMounted } from 'vue'
+
+const store = useStore()
+
+onMounted(() => {
+  store.getCurrentSementer()
+})
 </script>
 
 <template>
@@ -14,6 +22,7 @@ import Layout from '@/components/Layout.vue'
         ipsa saepe excepturi id iste provident? Doloremque ea ipsam expedita
         harum dolorum.
       </p>
+      <p>{{ store.currentSemester }}</p>
     </template>
   </Layout>
 </template>
